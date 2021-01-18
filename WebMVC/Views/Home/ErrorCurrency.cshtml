@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Ошибка поиска валюты";
+}
+<br>
+<br/>
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Ошибка</h4>
+        <h6 class="card-subtitle mb-2 text-muted">Ваша валюта не представлена на сайте ЦБ</h6>
+        @Html.ActionLink("Вернуться к поиску", "Index", "Home", null,new
+        {
+            @class= "card-link btn btn-primary"
+        }
+            )
+    </div>
+</div>

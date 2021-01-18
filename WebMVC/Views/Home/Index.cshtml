@@ -1,0 +1,64 @@
+﻿@model Cash
+@{
+    ViewData["Title"] = "Курс валют";
+}
+@using WebMVC.HelperHtm
+<br>
+<form asp-action="DataResponse" asp-controller="Home">
+    <div class="form-group row">
+        <label for="Name" class="col-sm-2 col-form-label" >Валюта</label>
+        <div class="col-sm-10">
+            <input id="Name" type="text" name="Prefix" class="form-control" placeholder="Введите валюту" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-10 offset-sm-2">
+            <button type="submit" class="btn btn-primary">Отправить</button>
+        </div>
+    </div>
+</form>
+@Html.ActionLink("Обновить", "CashNew", "Home",null,new
+{
+    @class= "btn btn-primary "
+})
+@Html.ActionLink("Очистить", "CashClean", "Home",null,new
+{
+    @class="btn btn-primary"
+})
+
+@Html.CreateTable(Model)
+
+@section Scripts
+{
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#Name").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Home/NameResponse",
+                        type: "POST",
+                        dataType: "json",
+                        data: { Prefix: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.Name,
+                                    value: item.Name
+                                };
+                            }));
+
+                        }
+                    });
+                },
+                messages: {
+                    noResults: "", results: ""
+                }
+            });
+        })
+    </script>
+}
+
+
