@@ -7,14 +7,24 @@ namespace WebMVC.Models.TelegBot
     /// <summary>
     /// Устройство бота
     /// </summary>
-    public class Bot
+    class Bot
     {
-        private static TelegramBotClient botClient;
-        private static List<Command> commandsList;
+        private static Bot bot;
+        private TelegramBotClient botClient;
+        private List<Command> commandsList;
 
-        public static IReadOnlyList<Command> Commands => commandsList.AsReadOnly();
+        private Bot() { }
 
-        public static async Task<TelegramBotClient> GetBotClientAsync()
+        public IReadOnlyList<Command> Commands => commandsList.AsReadOnly();
+
+        public static Bot getInstance()
+        {
+            if (bot == null)
+                bot = new Bot();
+            return bot;
+        }
+
+        public async Task<TelegramBotClient> GetBotClientAsync()
         {
             if (botClient != null)
             {

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebMVC.interfaces;
+using WebMVC.mocks;
 using WebMVC.Models.TelegBot;
 
 namespace WebMVC
@@ -19,13 +21,16 @@ namespace WebMVC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews().AddNewtonsoftJson();
-            
+            services.AddTransient<IHome, Home>();
+            services.AddTransient<ICash, Cash_declaration>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            Bot.GetBotClientAsync().Wait();
+            Bot bot;
+            bot = Bot.getInstance();
+            bot.GetBotClientAsync().Wait();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
