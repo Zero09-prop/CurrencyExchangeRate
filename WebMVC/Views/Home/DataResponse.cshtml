@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Валюта";
+}
+<br>
+<br/>
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Ваша валюта</h4>
+        <h6 class="card-subtitle mb-2 text-muted">@ViewBag.CurName</h6>
+        <p class=" h5 card-text text-success font-italic">
+            @ViewBag.CurCourse
+        </p>
+        @Html.ActionLink("Вернуться к поиску", "Index", "Home", null,new
+   {
+       @class= "card-link btn btn-primary"
+   }
+            )
+    </div>
+</div>
