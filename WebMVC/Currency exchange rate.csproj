@@ -12,4 +12,9 @@
     <PackageReference Include="Telegram.Bot" Version="15.7.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="abs_classes\" />
+    <Folder Include="history_book\" />
+  </ItemGroup>
+
 </Project>

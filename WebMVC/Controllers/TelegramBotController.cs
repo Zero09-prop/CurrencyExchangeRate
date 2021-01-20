@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Collections.Concurrent;
-using System.Net.Http;
+﻿using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebMVC.Models;
-using Newtonsoft.Json;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using WebMVC.Models.TelegBot;
-using MediaTypeHeaderValue = System.Net.Http.Headers.MediaTypeHeaderValue;
 using WebMVC.interfaces;
+using WebMVC.Models.TelegBot;
 
 namespace WebMVC.Controllers
 {
@@ -20,7 +14,6 @@ namespace WebMVC.Controllers
 
         private ICash icash;
         private IHome ihome;
-
         public TelegramBotController(ICash icash, IHome ihome)
         {
             this.icash = icash;

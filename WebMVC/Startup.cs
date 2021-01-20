@@ -24,14 +24,15 @@ namespace WebMVC
             services.AddControllersWithViews().AddNewtonsoftJson();
             services.AddTransient<IHome, Home>();
             services.AddTransient<ICash, Cash_declaration>();
+            services.AddTransient<IDadata, Dadata_declaration>();
+            services.AddTransient<ICbr, Cbr_declaration>();
+            services.AddTransient<IBot, Bot>();
             services.Configure<IDP>(Configuration.GetSection("IDP"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
-            Bot.GetBotClientAsync().Wait();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -54,7 +55,8 @@ namespace WebMVC
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-            
+            Bot.GetBotClientAsync().Wait();
+
         }
     }
 }
