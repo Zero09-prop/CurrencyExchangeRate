@@ -1,24 +1,21 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
-using System.Net;
 using Microsoft.Extensions.Options;
 using WebMVC.interfaces;
 using WebMVC.Models;
-
 namespace WebMVC.mocks
 {
     public class Cash_declaration : ICash
     {
         public Cash cash;
         private readonly IOptions<IDP> _IDPs;
-        public Cash_declaration(IOptions<IDP> IDPs)
+        private readonly ICbr _cbr;
+        public Cash_declaration(IOptions<IDP> IDPs, ICbr cbr)
         {
             _IDPs = IDPs;
+            _cbr = cbr;
             cash = Cash.GetInstance();
         }
-
-        WebClient wc = new WebClient();
         public ConcurrentDictionary<string, double> CashWork(string ValuteCode, ref bool isOk)
         {
             //Проверка наличия в кеше валюты и подходит ли она по времени
@@ -36,15 +33,7 @@ namespace WebMVC.mocks
                 return dct;
             }
 
-            //Если валюты в кеше нет, то скачиваем файл со всеми валютами с сайта ЦБ
-            //
-
-            string json = wc.DownloadString(_IDPs.Value.UrlCbr);
-
-            //разбиваем на сущности
-            //
-
-            var parsed = JsonConvert.DeserializeObject<CbrResponse>(json);
+            var parsed = _cbr.CbrWork(_IDPs);
 
             //и пробегаясь по каждой сущности, проверяем совпадает ли её код с запрошенным кодом
             //
@@ -57,6 +46,7 @@ namespace WebMVC.mocks
 
                     isOk = true;
                     cash.CashValues[key] = parsed.Valute[key];
+                    History.SendSearchHistory(parsed.Valute[key]);
                     break;
                 }
             }
@@ -86,15 +76,7 @@ namespace WebMVC.mocks
         
         public void CashNew()
         {
-            //Загружаем файл с валютами с сайта ЦБ
-            //
-            string json = wc.DownloadString(_IDPs.Value.UrlCbr);
-
-            //Превращаем текст в сущности
-            //
-
-            var parsed = JsonConvert.DeserializeObject<CbrResponse>(json);
-
+            var parsed = _cbr.CbrWork(_IDPs);
             //Создаём временное хранилище
             //
             ConcurrentDictionary<string, Currency> temp = new ConcurrentDictionary<string, Currency>();
