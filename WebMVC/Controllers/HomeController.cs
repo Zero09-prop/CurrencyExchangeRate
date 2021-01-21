@@ -17,7 +17,7 @@ namespace WebMVC.Controllers
         //Кеш сервера, хранящий информацию о запрошенных валютах в виде [Код валюты - Currency]
         //
 
-        public Cash cash;
+        private readonly Cash cash;
 
         //Клиент для скачивания файла с курсами валют с сайта центробанка
         //
@@ -26,9 +26,9 @@ namespace WebMVC.Controllers
 
         //public ConcurrentDictionary<string, string> dictValute;
 
-        public HomeController(ICash _iCash, IHome ihome)
+        public HomeController(ICash _iCash, IHome ihome,Cash cash)
         {
-            cash = Cash.GetInstance();
+            this.cash = cash;
             icash = _iCash;
             this.ihome = ihome;
         }
