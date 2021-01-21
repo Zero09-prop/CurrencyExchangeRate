@@ -14,10 +14,13 @@ namespace WebMVC.Controllers
 
         private ICash icash;
         private IHome ihome;
-        public TelegramBotController(ICash icash, IHome ihome)
+        private Bot bot;
+        public TelegramBotController(ICash icash, IHome ihome,Bot bot)
         {
             this.icash = icash;
             this.ihome = ihome;
+            this.bot = bot;
+
         }
 
         /// <summary>
@@ -32,7 +35,7 @@ namespace WebMVC.Controllers
         {
             //Инициализировали клиент
             //
-            TelegramBotClient client = await Bot.GetBotClientAsync();
+            TelegramBotClient client =  await bot.GetBotClientAsync();
             if (update == null)
             {
                 return NotFound("Error message");

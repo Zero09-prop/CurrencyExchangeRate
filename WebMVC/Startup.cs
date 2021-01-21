@@ -1,3 +1,5 @@
+using Autofac;
+using Autofac.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -12,27 +14,42 @@ namespace WebMVC
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IWebHostEnvironment env)
         {
-            Configuration = configuration;
+            // Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
+            this.Configuration = builder.Build();
         }
-        public IConfiguration Configuration { get; }
-
+        public IConfigurationRoot Configuration { get; private set; }
+        public ILifetimeScope AutofacContainer { get; private set; }
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews().AddNewtonsoftJson();
-            services.AddTransient<IHome, Home>();
-            services.AddTransient<ICash, Cash_declaration>();
-            services.AddTransient<IDadata, Dadata_declaration>();
-            services.AddTransient<ICbr, Cbr_declaration>();
-            services.AddTransient<IBot, Bot>();
             services.Configure<IDP>(Configuration.GetSection("IDP"));
-        }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        }
+        public void ConfigureContainer(ContainerBuilder builder)
         {
+            // Register your own things directly with Autofac here. Don't
+            // call builder.Populate(), that happens in AutofacServiceProviderFactory
+            // for you.
+            
+            builder.RegisterType<Cash>().SingleInstance();
+            builder.RegisterType<Bot>().SingleInstance();
+            builder.RegisterType<Home>().As<IHome>();
+            builder.RegisterType<Cash_declaration>().As<ICash>();
+            builder.RegisterType<Dadata_declaration>().As<IDadata>();
+            builder.RegisterType<Cbr_declaration>().As<ICbr>();
+        }
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,Bot bot)
+        {
+            bot.GetBotClientAsync().Wait();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -55,7 +72,7 @@ namespace WebMVC
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-            Bot.GetBotClientAsync().Wait();
+            
 
         }
     }

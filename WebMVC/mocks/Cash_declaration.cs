@@ -10,11 +10,11 @@ namespace WebMVC.mocks
         public Cash cash;
         private readonly IOptions<IDP> _IDPs;
         private readonly ICbr _cbr;
-        public Cash_declaration(IOptions<IDP> IDPs, ICbr cbr)
+        public Cash_declaration(IOptions<IDP> IDPs, ICbr cbr,Cash _cash)
         {
             _IDPs = IDPs;
             _cbr = cbr;
-            cash = Cash.GetInstance();
+            cash = _cash;
         }
         public ConcurrentDictionary<string, double> CashWork(string ValuteCode, ref bool isOk)
         {
@@ -46,7 +46,6 @@ namespace WebMVC.mocks
 
                     isOk = true;
                     cash.CashValues[key] = parsed.Valute[key];
-                    History.SendSearchHistory(parsed.Valute[key]);
                     break;
                 }
             }

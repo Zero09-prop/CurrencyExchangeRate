@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
 using WebMVC.interfaces;
 using WebMVC.Models;
 
@@ -11,11 +10,10 @@ namespace WebMVC.mocks
 {
     public class Home : IHome
     {
-        private readonly IOptions<IDP> _IDPs;
+       
         private readonly IDadata _dadata;
-        public Home(IOptions<IDP> IDPs,IDadata idadata)
+        public Home(IDadata idadata)
         {
-            _IDPs = IDPs;
             _dadata = idadata;
         }
         [HttpPost]
